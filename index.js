@@ -183,6 +183,10 @@ function skip(message, serverQueue) {
     if (!serverQueue) {
         return message.channel.send("Listede geçebileceğim bir müzik mevcut değil.");
     }
+    if(serverQueue.songs.length === 1){
+        serverQueue.connection.dispatcher.end();
+        return message.channel.send("Listede geçebileceğim bir müzik mevcut değil.");
+    }
 
     serverQueue.connection.dispatcher.end();
 }
