@@ -98,6 +98,7 @@ function helpCommands(message) {
     return message.author.send(
         `Senin için özelliklerimi aşağıda sunuyorum.
         \n${commands.presentYourSelf}: Kendimi sana tanıtırım.
+        \n${commands.hi}: Selam bile veriyorum.
         \n${commands.playMusic}: Müzik çalarım.
         \n${commands.skipMusic}: Müziği geçerim.
         \n${commands.stopMusic}: Müziği bitiririm.
