@@ -1,4 +1,6 @@
 const Discord = require('discord.js');
+const lol = require('./lol');
+
 require('dotenv').config()
 
 const config = {
@@ -17,7 +19,8 @@ const commands = {
     "playMusic": `${config.prefix}oynat`,
     "skipMusic": `${config.prefix}geç`,
     "stopMusic": `${config.prefix}dur`,
-    "helpCommand": `${config.prefix}yardım`
+    "helpCommand": `${config.prefix}yardım`,
+    "lol": `${config.prefix}lol`
 }
 
 const queue = new Map();
@@ -102,7 +105,8 @@ function helpCommands(message) {
         \n${commands.playMusic}: Müzik çalarım.
         \n${commands.skipMusic}: Müziği geçerim.
         \n${commands.stopMusic}: Müziği bitiririm.
-        \n${commands.helpCommand}: Yardim komutlarını yollar.`
+        \n${commands.helpCommand}: Yardim komutlarını yollar.
+        \n${commands.lol}: Girdiğin veya bulunduğun oyun ile iligili basit bilgiler verir.`
     )
 }
 
@@ -126,9 +130,46 @@ function executeMessages(message, serverQueue) {
     else if (args[0] === commands.hi) {
         return message.channel.send(`A.s. ${message.author.username}`);
     }
+    else if (args[0] === commands.lol) {
+        getInfoAboutCurrentLolGame(message);
+    }
     else {
         noCommandAvailable(message);
     }
+}
+
+function getInfoAboutCurrentLolGame(message) {
+    const args = message.content.split(" ");
+    let username = '';
+    for (let index = 1; index < args.length; index++) {
+        const element = args[index];
+        if (index === 1) {
+            username = `${element}`;
+        }
+        else {
+            username = `${username} ${element}`;
+        }
+
+    }
+    lol.getDataAboutGame(username).then(response => {
+        console.log(response);
+
+        if(response.team1.length ===  0 || response.team2.length === 0){
+            return message.channel.send(
+                `Selam ${username}, şu anda aktif bir oyunda olmayabilir ya da bu kullanıcı bulunamıyor olabilir.`
+            );
+        }
+        return message.channel.send(
+            `Selam ${username}, işlem başarılı fakat henüz tam olarak geliştirmem bitmedi.`
+        );
+
+    }).catch(e => {
+        return message.channel.send(
+            `Selam ${username}, aktif bir oyunda olmayabilir, kullanıcı adını hatalı girmiş olabilir, yada sistemde bir arıza çıkmış olabilir.`
+        );
+    });
+
+
 }
 
 
@@ -183,7 +224,7 @@ function skip(message, serverQueue) {
     if (!serverQueue) {
         return message.channel.send("Listede geçebileceğim bir müzik mevcut değil.");
     }
-    if(serverQueue.songs.length === 1){
+    if (serverQueue.songs.length === 1) {
         serverQueue.connection.dispatcher.end();
         return message.channel.send("Listede geçebileceğim bir müzik mevcut değil.");
     }
