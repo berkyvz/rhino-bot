@@ -55,7 +55,23 @@ async function playMusic(message, serverQueue) {
             "Lütfen youtube üzerinden bir link ile çalıştırın. Eğer link doğru ise lütfen komutla arasında 1 adet boşluk olduğuna emin olun."
         );
     }
-    const songInfo = await ytdl.getInfo(args[1]);
+
+    let songInfo;
+    try{
+       songInfo = await ytdl.getInfo(args[1]);
+    }catch(e){
+        console.log(e);
+        return message.channel.send(
+            "Loglarıma bakın bir sorun var (YouTube API seems down right now)."
+        );
+    }
+    if(!songInfo){
+        console.log("songInfo undefined geldi.");
+        return message.channel.send(
+            "Loglarıma bakın bir sorun var."
+        );
+    }
+    
 
     const song = {
         title: songInfo.videoDetails.title,
