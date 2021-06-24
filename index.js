@@ -37,9 +37,9 @@ function whoAmI(message) {
 }
 
 async function playMusic(message, serverQueue) {
-    const args = message.content.split(" ");
+    
+    //permission checks.
     const voiceChannel = message.member.voice.channel;
-
     if (!voiceChannel) {
         return message.channel.send(
             `Müzik çalmak için uygun bir kanalda değilsin ${message.author.username}`
@@ -51,18 +51,43 @@ async function playMusic(message, serverQueue) {
             "Bu kanala katılıp müzik çalabilmek için yetkim yok!"
         );
     }
-    if (!args[1] || !args[1].startsWith("https://www.youtube.com/")) {
-        return message.channel.send(
-            "Lütfen youtube üzerinden bir link ile çalıştırın. Eğer link doğru ise lütfen komutla arasında 1 adet boşluk olduğuna emin olun."
-        );
+
+    //taking arguments
+    const args = message.content.trim().split(" ");
+    let elements = args.filter(value => value !== '' );
+
+    let url = "";
+    if( elements.length === 1){
+        return message.channel.send("Eksik arguman girişi yaptınız. Kullanmak için $play <youtube linki> yada $play <arama> şeklinde giriniz.");
     }
+    else if ( elements.length === 2 && elements[1].startsWith("https://www.youtube.com/")){
+        url = elements[1];
+    }
+    else{
+        let queryString = "";
+        elements.map((element, index) => {
+            if(index > 0){
+                queryString = queryString + element + " ";
+            }
+        });
+        queryString = queryString.trim();
+        url = await searchYoutube(queryString);
+        if(!url){
+            return message.channel.send("Aradığınız şey youtube üzerinde bulunamadı.");
+        }
+    }
+    
 
     //TODO: Args.length e gore youtube search at!
     //await searchYoutube(queryString) => url döner!
+    playMusicWithYDTL(url, serverQueue, message, voiceChannel);
 
+}
+
+async function playMusicWithYDTL(url, serverQueue, message, voiceChannel){
     let songInfo;
     try{
-       songInfo = await ytdl.getInfo(args[1]);
+       songInfo = await ytdl.getInfo(url);
     }catch(e){
         console.log(e);
         return message.channel.send(
