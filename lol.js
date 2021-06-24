@@ -6,6 +6,9 @@ const config = {
     "baseURL": process.env.LOLBASEUREL || "https://tr1.api.riotgames.com"
 }
 
+
+console.log("LOL MODULE IS RUNNING");
+
 async function getLatestVersion() {
     try {
         const resp = await axios.get('https://ddragon.leagueoflegends.com/api/versions.json')

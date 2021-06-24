@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const lol = require('./lol');
+const youtubeSearch = require('./youtube');
 
 require('dotenv').config()
 
@@ -55,6 +56,9 @@ async function playMusic(message, serverQueue) {
             "Lütfen youtube üzerinden bir link ile çalıştırın. Eğer link doğru ise lütfen komutla arasında 1 adet boşluk olduğuna emin olun."
         );
     }
+
+    //TODO: Args.length e gore youtube search at!
+    //await searchYoutube(queryString) => url döner!
 
     let songInfo;
     try{
@@ -262,4 +266,8 @@ function stop(message, serverQueue) {
     serverQueue.songs = [];
     serverQueue.connection.dispatcher.end();
     return message.channel.send("Liste temizlendi ve müzik kapatıldı. AEO!")
+}
+
+async function searchYoutube(text){
+    return await youtubeSearch.getYoutubeLink(text);
 }
