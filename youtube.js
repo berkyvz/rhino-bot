@@ -10,7 +10,8 @@ console.log("YOUTUBE MODULE IS RUNNING");
 var opts = {
     maxResults: 1,
     type: 'video',
-    key: config.token
+    key: config.token,
+    videoEmbeddable : true,
 };
 
 

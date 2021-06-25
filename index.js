@@ -100,11 +100,16 @@ async function playMusicWithYDTL(url, serverQueue, message, voiceChannel){
             "Loglarıma bakın bir sorun var."
         );
     }
+
     
+    let thumbnail = songInfo.videoDetails.thumbnails.length >= 2 && songInfo.videoDetails.thumbnails[2].url;
 
     const song = {
         title: songInfo.videoDetails.title,
         url: songInfo.videoDetails.video_url,
+        thumbnail: thumbnail,
+        channelName : songInfo.videoDetails.author.name,
+        view: songInfo.videoDetails.viewCount,
     };
 
     if (!serverQueue) {
@@ -259,7 +264,22 @@ function play(guild, song) {
         })
         .on("error", error => console.error(error));
     dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-    serverQueue.textChannel.send(`Oynatılıyor: **${song.title}**`);
+
+    const exampleEmbed = new Discord.MessageEmbed()
+	.setColor('#ffffff')
+	.setTitle(`${song.title}`)
+	.setURL(`${song.url}`)
+    .addFields(
+		{ name: 'OYNATILIYOR', value: '.' },
+		{ name: '\u200B', value: '\u200B' },
+		{ name: 'Kanal', value: `${song.channelName}`, inline: true },
+		{ name: 'İzlenme', value: `${song.view}`, inline: true },
+	)
+	.setThumbnail(`${song.thumbnail}`)
+	.setTimestamp()
+	.setFooter('Botun Kralı', 'https://raw.githubusercontent.com/berkyvz/rhino-bot/master/rhino.jpg');
+
+    serverQueue.textChannel.send(exampleEmbed);
 }
 
 function skip(message, serverQueue) {
