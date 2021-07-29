@@ -11,7 +11,7 @@
     "ffmpeg": "0.0.4",
     "fluent-ffmpeg": "^2.1.2",
     "youtube-search": "^1.1.6",
-    "ytdl-core": "github:fent/node-ytdl-core#d1f535712410eebd79a7468abd07d94f8c4ebe5a"
+    "ytdl-core": "4.9.0"
   },
   "devDependencies": {},
   "scripts": {
